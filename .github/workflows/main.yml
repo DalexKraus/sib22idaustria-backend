@@ -1,0 +1,33 @@
+name: Build and Push Docker Image to Registry
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore docker config
+        run: |
+          mkdir -p ~/.docker
+          echo "${{ secrets.DOCKER_CONFIG_JSON }}" | base64 --decode > ~/.docker/config.json
+
+      - name: Fix permissions on config.json
+        run: chmod 0600 ~/.docker/config.json
+
+      - name: Docker Login
+        run: |
+          docker login harbor.servas.ai \
+            -u "${{ secrets.REGISTRY_USERNAME }}" \
+            -p "${{ secrets.REGISTRY_PASSWORD }}"
+
+      - name: Build Docker Image
+        run: docker build -t sib22idaustria-backend .
+      - name: Tag Docker Image
+        run: docker tag sib22idaustria-backend harbor.servas.ai/sib22idaustria/backend:latest
+        
+      - name: Push Docker Image
+        run: docker push harbor.servas.ai/sib22idaustria/backend:latest
