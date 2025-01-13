@@ -2,6 +2,7 @@ using IDAustriaDemo.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
+var oidcAuthority = EnvUtil.GetValueOrThrow("OIDC_AUTHORITY");
 var jwtAudience = EnvUtil.GetValueOrThrow("JWT_AUDIENCE");
 var jwtIssuer = EnvUtil.GetValueOrThrow("JWT_ISSUER");
 
@@ -14,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "https://eid2.oesterreich.gv.at";
+        options.Authority = oidcAuthority;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = true,
