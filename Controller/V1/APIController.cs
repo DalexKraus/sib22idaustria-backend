@@ -57,7 +57,7 @@ namespace IDAustriaDemo.Controller.V1
             queryParams["client_id"] = clientId;
             queryParams["redirect_uri"] = redirectUri;
             queryParams["scope"] = "openid profile";
-            queryParams["state"] = state;
+            // queryParams["state"] = state;
 
             var authorizationUrl = $"https://eid2.oesterreich.gv.at/auth/idp/profile/oidc/authorize?{queryParams}";
             return Redirect(authorizationUrl);
@@ -75,7 +75,7 @@ namespace IDAustriaDemo.Controller.V1
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         [HttpGet("callback")]
-        public async Task<IActionResult> Callback([FromQuery] string code, [FromQuery] string state)
+        public async Task<IActionResult> Callback([FromQuery] string code, [FromQuery] string? state)
         {
             if (string.IsNullOrEmpty(code))
             {
