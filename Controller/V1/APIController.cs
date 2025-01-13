@@ -77,6 +77,7 @@ namespace IDAustriaDemo.Controller.V1
         {
             if (string.IsNullOrEmpty(code))
             {
+                _logger.LogInformation("Authorization code is missing");
                 return BadRequest("Authorization code is missing");
             }
 
@@ -86,6 +87,11 @@ namespace IDAustriaDemo.Controller.V1
             var sessionState = HttpContext.Session.GetString("OidcState");
             if (string.IsNullOrEmpty(sessionState) || state != sessionState)
             {
+                _logger.LogInformation(
+                    "Invalid state parameter. Possible CSRF attack. Session={}, Query={}",
+                    sessionState,
+                    state
+                );
                 return BadRequest($"Invalid state parameter. Possible CSRF attack. Session={sessionState}, Query={state}");
             }
 
@@ -118,6 +124,7 @@ namespace IDAustriaDemo.Controller.V1
             var responseContent = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
+                _logger.LogError("Token exchange failed: {}", responseContent);
                 return BadRequest($"Token exchange failed: {responseContent}");
             }
 
