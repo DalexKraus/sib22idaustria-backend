@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // @@@ BSC
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
