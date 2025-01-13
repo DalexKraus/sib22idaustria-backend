@@ -48,7 +48,15 @@ namespace IDAustriaDemo.Controller.V1
             var state = RandomNumber(100000, 999999).ToString();
 
             // Store the state in the session
-            HttpContext.Session.SetString("OidcState", state);
+            if (HttpContext.Session.IsAvailable)
+            {
+                HttpContext.Session.SetString("OidcState", state);
+            }
+            else
+            {
+                _logger.LogError("Session is not available.");
+                return BadRequest("Session is not available.");
+            }
 
             var queryParams = HttpUtility.ParseQueryString(string.Empty);
             queryParams["response_type"] = "code";
