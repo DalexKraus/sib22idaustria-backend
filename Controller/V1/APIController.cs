@@ -1,16 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.JsonWebTokens;
 using System.Web;
 using System.Text.Json;
 using System.Text;
 using IDAustriaDemo.Util;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
-using Microsoft.Extensions.ObjectPool;
 
 namespace IDAustriaDemo.Controller.V1
 {
@@ -28,39 +21,23 @@ namespace IDAustriaDemo.Controller.V1
             _frontendBaseUrl = EnvUtil.GetValueOrThrow("FRONTEND_BASE_URL");
         }
 
-        /// <summary>
-        /// Generate a secure random number
-        /// (source: https://stackoverflow.com/a/71921401)
-        /// </summary>
-        /// <param name="fromInclusive">Random number interval (min, including this number)</param>
-        /// <param name="toExclusive">Random number interval (max, excluding this number)</param>
-        /// <returns></returns>
-        private static int RandomNumber(int fromInclusive, int toExclusive)
-            => System.Security.Cryptography.RandomNumberGenerator.GetInt32(fromInclusive, toExclusive);
-
         [HttpGet("login")]
         public IActionResult Login()
         {
             var clientId = EnvUtil.GetValueOrThrow("OIDC_CLIENT_ID");
             var redirectUri = EnvUtil.GetValueOrThrow("OIDC_REDIRECT_URI");
 
-            // This state parameter is used to prevent CSRF attacks and must be unique for each
-            // authentication request. It is recommended to use a cryptographically secure random value.
-            var state = RandomNumber(100000, 999999).ToString();
-
-            // In a practical production application, one should store the state parameter
-            // in a secure cookie or session and validate it in the callback endpoint
-            // in order to prevent CSRF attacks. This is not implemented here for simplicity.
-
             var queryParams = HttpUtility.ParseQueryString(string.Empty);
             queryParams["response_type"] = "code";
             queryParams["client_id"] = clientId;
             queryParams["redirect_uri"] = redirectUri;
             queryParams["scope"] = "openid profile";
+            // In a practical production application, one should use the state parameter
+            // in order to prevent CSRF attacks. This is not implemented here for simplicity.
             // queryParams["state"] = state;
 
-            var authorizationUrl = $"https://eid2.oesterreich.gv.at/auth/idp/profile/oidc/authorize?{queryParams}";
-            return Redirect(authorizationUrl);
+            var authorizeUrl = $"https://eid2.oesterreich.gv.at/auth/idp/profile/oidc/authorize?{queryParams}";
+            return Redirect(authorizeUrl);
         }
 
         /// <summary>
