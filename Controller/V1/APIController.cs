@@ -97,6 +97,8 @@ namespace IDAustriaDemo.Controller.V1
             queryParams["client_secret"] = EnvUtil.GetValueOrThrow("OIDC_CLIENT_SECRET");
             queryParams["redirect_uri"] = EnvUtil.GetValueOrThrow("OIDC_REDIRECT_URI");
 
+            _logger.LogInformation("client_id: {}\nclient_secret: {}\nredirect_uri: {}\n", queryParams["client_id"], queryParams["client_secret"], queryParams["redirect_uri"]);
+
             var requestBody = new StringContent(
                 queryParams.ToString()!,
                 Encoding.UTF8,
