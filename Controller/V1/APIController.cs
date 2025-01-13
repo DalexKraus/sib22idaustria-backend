@@ -124,7 +124,10 @@ namespace IDAustriaDemo.Controller.V1
 
             // Redirect to the frontend with the ID token
             var tokenUrlEncoded = HttpUtility.UrlEncode(idToken);
-            return Redirect($"{_frontendBaseUrl}/login/redirect?token={tokenUrlEncoded}");
+            var redirectUrl = $"{_frontendBaseUrl}/login/redirect?token={tokenUrlEncoded}";
+            _logger.LogInformation("Redirecting to: {}", redirectUrl);
+
+            return Redirect(redirectUrl);
         }
 
 
