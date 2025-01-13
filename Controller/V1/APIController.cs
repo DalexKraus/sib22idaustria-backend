@@ -47,13 +47,8 @@ namespace IDAustriaDemo.Controller.V1
             // authentication request. It is recommended to use a cryptographically secure random value.
             var state = RandomNumber(100000, 999999).ToString();
 
-            // Store the state in session or a secure cookie
-            Response.Cookies.Append("OidcState", state, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict
-            });
+            // Store the state in the session
+            HttpContext.Session.SetString("OidcState", state);
 
             var queryParams = HttpUtility.ParseQueryString(string.Empty);
             queryParams["response_type"] = "code";
@@ -87,14 +82,14 @@ namespace IDAustriaDemo.Controller.V1
 
             // Verify the state parameter to prevent CSRF attacks
             // The state parameter must match the one stored in the session
-            // or a secure cookie during the authentication request
-            Request.Cookies.TryGetValue("OidcState", out var cookieState);
-            if (string.IsNullOrEmpty(cookieState) || state != cookieState)
+            // during the authentication request
+            var sessionState = HttpContext.Session.GetString("OidcState");
+            if (string.IsNullOrEmpty(sessionState) || state != sessionState)
             {
                 return BadRequest("Invalid state parameter. Possible CSRF attack.");
             }
 
-            // Clear the state after verification to prevent reuse
+            // Clear the state from the session
             HttpContext.Session.Remove("OidcState");
 
             // Exchange the authorization code for an ID token

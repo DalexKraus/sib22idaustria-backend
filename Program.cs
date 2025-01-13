@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // @@@ BSC
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
 
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -55,6 +56,7 @@ else
     );
 }
 
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
