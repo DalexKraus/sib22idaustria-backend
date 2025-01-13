@@ -2,15 +2,15 @@ using IDAustriaDemo.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-var builder = WebApplication.CreateBuilder(args);
+var jwtAudience = EnvUtil.GetValueOrThrow("JWT_AUDIENCE");
+var jwtIssuer = EnvUtil.GetValueOrThrow("JWT_ISSUER");
 
-builder.Services.AddOpenApi();
+var builder = WebApplication.CreateBuilder(args);
 
 // @@@ BSC
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers();
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -18,9 +18,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = true,
-            ValidAudience = "https://sib22idaustria.cc/auth/c79c8897-e563-4d4e-bc3a-7386e1b208c3",
+            ValidAudience = jwtAudience,
             ValidateIssuer = true,
-            ValidIssuer = "https://eid2.oesterreich.gv.at",
+            ValidIssuer = jwtIssuer,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true
         };
