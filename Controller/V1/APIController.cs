@@ -86,7 +86,7 @@ namespace IDAustriaDemo.Controller.V1
             var sessionState = HttpContext.Session.GetString("OidcState");
             if (string.IsNullOrEmpty(sessionState) || state != sessionState)
             {
-                return BadRequest("Invalid state parameter. Possible CSRF attack.");
+                return BadRequest($"Invalid state parameter. Possible CSRF attack. Session={sessionState}, Query={state}");
             }
 
             // Clear the state from the session
