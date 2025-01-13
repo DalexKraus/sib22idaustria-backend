@@ -10,6 +10,7 @@ using System.Text;
 using IDAustriaDemo.Util;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
+using Microsoft.Extensions.ObjectPool;
 
 namespace IDAustriaDemo.Controller.V1
 {
@@ -47,16 +48,9 @@ namespace IDAustriaDemo.Controller.V1
             // authentication request. It is recommended to use a cryptographically secure random value.
             var state = RandomNumber(100000, 999999).ToString();
 
-            // Store the state in the session
-            if (HttpContext.Session.IsAvailable)
-            {
-                HttpContext.Session.SetString("OidcState", state);
-            }
-            else
-            {
-                _logger.LogError("Session is not available.");
-                return BadRequest("Session is not available.");
-            }
+            // In a practical production application, one should store the state parameter
+            // in a secure cookie or session and validate it in the callback endpoint
+            // in order to prevent CSRF attacks. This is not implemented here for simplicity.
 
             var queryParams = HttpUtility.ParseQueryString(string.Empty);
             queryParams["response_type"] = "code";
@@ -89,22 +83,8 @@ namespace IDAustriaDemo.Controller.V1
                 return BadRequest("Authorization code is missing");
             }
 
-            // Verify the state parameter to prevent CSRF attacks
-            // The state parameter must match the one stored in the session
-            // during the authentication request
-            var sessionState = HttpContext.Session.GetString("OidcState");
-            if (string.IsNullOrEmpty(sessionState) || state != sessionState)
-            {
-                _logger.LogInformation(
-                    "Invalid state parameter. Possible CSRF attack. Session={}, Query={}",
-                    sessionState,
-                    state
-                );
-                return BadRequest($"Invalid state parameter. Possible CSRF attack. Session={sessionState}, Query={state}");
-            }
-
-            // Clear the state from the session
-            HttpContext.Session.Remove("OidcState");
+            // In a practical production application, one should validate the state parameter
+            // in order to prevent CSRF attacks. This is not implemented here for simplicity.
 
             // Exchange the authorization code for an ID token
             var httpClient = new HttpClient();
