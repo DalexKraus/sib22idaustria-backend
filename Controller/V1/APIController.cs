@@ -36,7 +36,7 @@ namespace IDAustriaDemo.Controller.V1
             // in order to prevent CSRF attacks. This is not implemented here for simplicity.
             // queryParams["state"] = state;
 
-            var authorizeUrl = $"https://eid2.oesterreich.gv.at/auth/idp/profile/oidc/authorize?{queryParams}";
+            var authorizeUrl = $"https://eid.oesterreich.gv.at/auth/idp/profile/oidc/authorize?{queryParams}";
             return Redirect(authorizeUrl);
         }
 
