@@ -82,7 +82,7 @@ namespace IDAustriaDemo.Controller.V1
 
             // Send the request to the token endpoint
             var response = await httpClient.PostAsync(
-                "https://eid2.oesterreich.gv.at/auth/idp/profile/oidc/token",
+                "https://eid.oesterreich.gv.at/auth/idp/profile/oidc/token",
                 requestBody
             );
 
