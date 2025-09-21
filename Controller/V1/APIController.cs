@@ -111,8 +111,13 @@ namespace IDAustriaDemo.Controller.V1
         [Authorize]
         public ActionResult<string> ProtectedResource()
         {
-            var resource = $"Geheime Zahlen: {String.Join(", ", Enumerable.Range(1, 10))}";
-            return resource;
+            var vipGuests = new string[]
+            {
+                "Maximilian Schmidt",
+                "Sophie Müller",
+                "Alexander Weber"
+            };
+            return $"Exclusive VIP-Liste: {string.Join(", ", vipGuests)}";
         }
     }
 }
